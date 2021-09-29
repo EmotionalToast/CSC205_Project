@@ -1,16 +1,16 @@
 window.onload = (event) => {
     let table = document.getElementById("course-table")
-    let tableHeaders = Object.keys(courses[0]).
-        filter((key) =>
-            key.includes('Title') ||
-            key.includes('Faculty') ||
-            key.includes('Openings')
+    let tableHeaders = Object.keys(courseList[0]).
+        filter((attribute) =>
+            attribute.includes('Title') ||
+            attribute.includes('Faculty') ||
+            attribute.includes('Openings')
         );
 
     console.log(tableHeaders);
 
     generateTableHead(table, tableHeaders);
-    generateTable(table, courses);
+    generateTable(table, courseList);
 }
 
 function generateTableHead(table, tableHeaders) {
@@ -27,16 +27,16 @@ function generateTableHead(table, tableHeaders) {
     }
 }
 
-function generateTable(table, data) {
+function generateTable(table, courseList) {
 
     let tbody = table.createTBody();
 
-    for (let element of data) {
+    for (let course of courseList) {
         let row = tbody.insertRow();
 
-        for (key in element) {
+        for (value in course) {
             let cell = row.insertCell();
-            let text = document.createTextNode(element[key]);
+            let text = document.createTextNode(course[value]);
 
             cell.appendChild(text);
         }
@@ -52,7 +52,7 @@ function generateTable(table, data) {
  * This format is JSON or JAvaScript Object Notation - more info here https://www.w3schools.com/js/js_json_intro.asp
  */
 
-let courses = [
+let courseList = [
     {
         "Line": 81,
         "Department": "BUS",
