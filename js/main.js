@@ -6,11 +6,17 @@ window.onload = (event) => {
             attribute.includes('Faculty') ||
             attribute.includes('Openings')
         );
+    
+    let filteredCourses = courseList.map(a => ({ 
+        Title: a.Title, 
+        Faculty: a.Faculty, 
+        Openings: a.Openings 
+    }));
 
-    console.log(tableHeaders);
+    console.log(filteredCourses)
 
     generateTableHead(table, tableHeaders);
-    generateTable(table, courseList);
+    generateTable(table, filteredCourses);
 }
 
 function generateTableHead(table, tableHeaders) {
@@ -43,14 +49,7 @@ function generateTable(table, courseList) {
     }
 }
 
-/**
- * courses - an array - indicated by the opening and closing [ ]
- * 
- * Each element of the array is a JSON object. { } indicate the start and the end of an object.  In the object are name/value pairs in 
- * the format of "name": "value"  If the value is numeric, the pair can be "name": 4  (no quotes around the number)
- * 
- * This format is JSON or JAvaScript Object Notation - more info here https://www.w3schools.com/js/js_json_intro.asp
- */
+
 
 let courseList = [
     {
@@ -94,10 +93,46 @@ let courseList = [
         "End Date": "12\/17\/2021\r\n"
     },
     {
-        "Line": 168, "Department": "CSC", "Number": 133, "Section": 3, "Title": "SURVEY OF COMPUTER SCIENCE", "Faculty": "Madeira, Scott", "Openings": 7, "Capacity": 15, "Status": "Open", "Day": "T", "StartTime": "6:30:00 PM", "EndTime": "9:20 PM", "Campus": " Main Campus", "Building": " Science and Engineering", "Room": " SE 341 Computer Science Lab", "Credits": 0, "Start Date": "8\/30\/2021", "End Date": "12\/17\/2021\r\n"
-    }
-    , { "Line": 169, "Department": "CSC", "Number": 133, "Section": "0A", "Title": "SURVEY OF COMPUTER SCIENCE", "Faculty": "Richards, Gordon P.", "Openings": 15, "Capacity": 45, "Status": "Open", "Day": "TH", "StartTime": "8:00:00 AM", "EndTime": "9:20 AM", "Campus": " Main Campus", "Building": " Science and Engineering", "Room": " SE 110 Chemistry room", "Credits": 4, "Start Date": "8\/30\/2021", "End Date": "12\/17\/2021\r\n" }
-    , { "Line": 170, "Department": "CSC", "Number": 190, "Section": 1, "Title": "HTML", "Faculty": "Madeira, Scott", "Openings": 4, "Capacity": 25, "Status": "Open", "Day": "M", "StartTime": "2:30:00 PM", "EndTime": "3:25 PM", "Campus": " Main Campus", "Building": " Science and Engineering", "Room": " SE 312A", "Credits": 1, "Start Date": "8\/30\/2021", "End Date": "12\/17\/2021\r\n" }
+        "Line": 168, 
+        "Department": "CSC", 
+        "Number": 133, 
+        "Section": 3, 
+        "Title": "SURVEY OF COMPUTER SCIENCE", 
+        "Faculty": "Madeira, Scott", 
+        "Openings": 7, 
+        "Capacity": 15, 
+        "Status": "Open", 
+        "Day": "T", 
+        "StartTime": "6:30:00 PM", 
+        "EndTime": "9:20 PM", 
+        "Campus": " Main Campus", 
+        "Building": " Science and Engineering", 
+        "Room": " SE 341 Computer Science Lab", 
+        "Credits": 0, 
+        "Start Date": "8\/30\/2021", 
+        "End Date": "12\/17\/2021\r\n"
+    }, 
+    { 
+        "Line": 169, 
+        "Department": "CSC", 
+        "Number": 133, 
+        "Section": "0A", 
+        "Title": "SURVEY OF COMPUTER SCIENCE", 
+        "Faculty": "Richards, Gordon P.", 
+        "Openings": 15, 
+        "Capacity": 45, 
+        "Status": "Open", 
+        "Day": "TH", 
+        "StartTime": "8:00:00 AM", 
+        "EndTime": "9:20 AM", 
+        "Campus": " Main Campus", 
+        "Building": " Science and Engineering", 
+        "Room": " SE 110 Chemistry room", 
+        "Credits": 4, 
+        "Start Date": "8\/30\/2021", 
+        "End Date": "12\/17\/2021\r\n" 
+    }, 
+    { "Line": 170, "Department": "CSC", "Number": 190, "Section": 1, "Title": "HTML", "Faculty": "Madeira, Scott", "Openings": 4, "Capacity": 25, "Status": "Open", "Day": "M", "StartTime": "2:30:00 PM", "EndTime": "3:25 PM", "Campus": " Main Campus", "Building": " Science and Engineering", "Room": " SE 312A", "Credits": 1, "Start Date": "8\/30\/2021", "End Date": "12\/17\/2021\r\n" }
     , { "Line": 171, "Department": "CSC", "Number": 205, "Section": 1, "Title": "HCI DESIGN & PROGRAMMING", "Faculty": "Madeira, Scott", "Openings": 10, "Capacity": 25, "Status": "Open", "Day": "MWF", "StartTime": "11:15:00 AM", "EndTime": "12:10 PM", "Campus": " Main Campus", "Building": " Science and Engineering", "Room": " SE 341 Computer Science Lab", "Credits": 3, "Start Date": "8\/30\/2021", "End Date": "12\/17\/2021\r\n" }
     , { "Line": 172, "Department": "CSC", "Number": 344, "Section": 1, "Title": "MANAGEMENT INFORMATION SYSTEM", "Faculty": "Poteete, Paul W. Steffine, Aaron", "Openings": 2, "Capacity": 90, "Status": "Open", "Day": "MWF", "StartTime": "1:25:00 PM", "EndTime": "2:20 PM", "Campus": " Main Campus", "Building": " Science and Engineering", "Room": " SE 341 Computer Science Lab", "Credits": 3, "Start Date": "8\/30\/2021", "End Date": "12\/17\/2021\r\n" }
     , { "Line": 173, "Department": "CSC", "Number": 363, "Section": "E1", "Title": "DATABASE SYSTEMS", "Faculty": "Hinderliter, Jeffery A", "Openings": 4, "Capacity": 30, "Status": "Open", "Day": "T", "StartTime": "6:30:00 PM", "EndTime": "9:20 PM", "Campus": " Main Campus", "Building": " Science and Engineering", "Room": " SE 233 Engineering Lab\/Classroom", "Credits": 3, "Start Date": "8\/30\/2021", "End Date": "12\/17\/2021\r\n" }
