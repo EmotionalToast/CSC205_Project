@@ -1,21 +1,21 @@
 window.onload = (event) => {
     let table = document.getElementById("course-table")
-    let tableHeaders = Object.keys(courseList[0]).
+    let tableHeaders = ["Course Number"]
+    let mergedTableHeaders = [].concat.apply(tableHeaders, (Object.keys(courseList[0]).
         filter((attribute) =>
             attribute.includes('Title') ||
             attribute.includes('Faculty') ||
             attribute.includes('Openings')
-        );
+        )));
     
     let filteredCourses = courseList.map(a => ({ 
+        Department: a.Department + a.Number + " " + a.Section,
         Title: a.Title, 
         Faculty: a.Faculty, 
         Openings: a.Openings 
     }));
 
-    console.log(filteredCourses)
-
-    generateTableHead(table, tableHeaders);
+    generateTableHead(table, mergedTableHeaders);
     generateTable(table, filteredCourses);
 }
 

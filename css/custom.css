@@ -1,8 +1,30 @@
 body {
+    background:rgb(6, 0, 34);
+    color: rgb(211, 221, 255);
     font-family: Arial, Helvetica, sans-serif;
     font-size: 16px;
 }
 
-#logo-image {
-    height: 75px;
+th {
+    font-size: 24px;
+}
+
+header {
+    height: 12%;
+
+    background-image: url("https://imgur.com/6cShaUG.png");
+    background-repeat: no-repeat;
+    background-size: 100%;
+    background-position-y: 42%;
+}
+
+header h1{
+    font-size: 48px;
+    font-weight: bold;
+    color:rgb(255, 255, 255);
+    text-shadow: 4px 4px rgb(44, 44, 44);
+}
+
+header img{
+    height: 150px;
 }
