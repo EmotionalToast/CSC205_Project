@@ -6,7 +6,7 @@ body {
 }
 
 th {
-    font-size: 24px;
+    font-size: 18px;
 }
 
 header {
@@ -26,5 +26,5 @@ header h1{
 }
 
 header img{
-    height: 150px;
+    height: 140px;
 }
