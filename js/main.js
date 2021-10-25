@@ -1,6 +1,6 @@
 window.onload = (event) => {
-    let table = document.getElementById("course-table")
-    let tableHeaders = ["Course Number"]
+    let table = document.getElementById("course-table");
+    let tableHeaders = ["Course Number"];
     let mergedTableHeaders = [].concat.apply(tableHeaders, (Object.keys(courseList[0]).
         filter((attribute) =>
             attribute.includes('Title') ||
@@ -12,11 +12,12 @@ window.onload = (event) => {
         Department: a.Department + a.Number + " " + a.Section,
         Title: a.Title, 
         Faculty: a.Faculty, 
-        Openings: a.Openings 
+        Openings: a.Openings + "/" + a.Capacity
     }));
 
     generateTableHead(table, mergedTableHeaders);
     generateTable(table, filteredCourses);
+    
 }
 
 function generateTableHead(table, tableHeaders) {
@@ -38,7 +39,7 @@ function generateTable(table, courseList) {
     let tbody = table.createTBody();
 
     for (let course of courseList) {
-        let row = tbody.insertRow();
+        let row = tbody.insertRow(); 
 
         for (value in course) {
             let cell = row.insertCell();
@@ -49,7 +50,9 @@ function generateTable(table, courseList) {
     }
 }
 
-
+function openInNewTab(url) {
+    window.open(url, '_blank').focus();
+}   
 
 let courseList = [
     {
