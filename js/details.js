@@ -1,8 +1,50 @@
 window.onload = (event) => {
     let detailsTable = document.getElementById("details-table");
-    let columnKeys = Object.keys(courseList[0]);
+    let tableHeaders = Object.keys(courseList[0]).
+        filter((attribute) =>
+            attribute.includes('Title') ||
+            attribute.includes('Faculty') ||
+            attribute.includes('Openings') ||
+            attribute.includes('Day') ||
+            attribute.includes('Campus') ||
+            attribute.includes('Building') ||
+            attribute.includes('Room') ||
+            attribute.includes('Credits') ||
+            attribute.includes('Date')
+        );
+        
+    tableHeaders.splice(0, 0, "Course Code");
+    tableHeaders.splice(5, 0, "Time");
 
-    generateDetails(detailsTable, columnKeys, courseList[0]);
+    let fortmattedData = formatData(courseList[0]);
+    generateDetails(detailsTable, tableHeaders, fortmattedData);
+}
+
+function formatData(course){
+    let filteredCourses = courseList.map(a => ({ 
+        Department: a.Department + " " + a.Number + " " + a.Section,
+        Title: a.Title, 
+        Faculty: a.Faculty, 
+        Openings: a.Openings + "/" + a.Capacity,
+        Status: a.Status,
+        Day: a.Day,
+        StartTime: a.StartTime + " - " + a.EndTime,
+        Campus: a.Campus,
+        Building: a.Building,
+        Room: a.Room,
+        Credits: a.Credits,
+        ["Start Date"]: a["Start Date"],
+        ["End Date"]: a["End Date"]
+    }));
+
+    filteredCourses[0]["Course Code"] = filteredCourses[0].Department;
+    filteredCourses[0]["Time"] = filteredCourses[0].StartTime;
+
+    delete filteredCourses[0].StartTime;
+    delete filteredCourses[0].EndTime;
+    delete filteredCourses[0].Department;
+
+    return filteredCourses[0];
 }
 
 function generateDetails(table, keys, course) {
