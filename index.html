@@ -8,25 +8,46 @@
         <title>Course Catalog</title>
 
         <link rel="stylesheet" href="css/custom.css">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
-            integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
     </head>
 
     <body class="Index bg-dark pt-5">
         <header id="header-content" class="clearfix align-middle">
             <img class="float-start m-3" src="https://www.geneva.edu/about-geneva/_assets/gc-seal.png">
             <h1 style="float:left" class="p-5">Geneva College Course Catalog</h1>
-            <h1 style="float:inline-end" class="p-5"><a href="details.html">Details</a></h1>
         </header>
 
-        <div class="row align-middle mx-3 mt-5">
-            <div class="col-12 col-md-8">
+        <div class="container-fluid">
+            <div class="row m-0 pt-4 pb-3">
+                <div class="col-12 col-md-3">
+                    <form id="searchform">
+                        <input type="text" placeholder="Search" class="form-control" id="searchbox">
+                    </form>
+                </div>
 
-                <table class="table w-auto table-dark table-striped table-bordered table-hover" id="course-table">
-                    <caption style="caption-side: top;">Click on any course to learn more.</caption>
-                </table>
+                <div class="col-12 col-md-9">
+                    <p id="outputtext"></p>
+                </div>
+                
+                <div class="pt-3">
+                    <button id="hideButton" type="button" class="btn btn-secondary" onclick="hideClasses()">Hide Full Classes</button>
+                </div>
+            </div>
 
+            
+
+            <div class="row m-0">
+                    <div class="col-7">
+                        <table class="table w-auto table-dark table-bordered table-hover" id="courseTable">
+                            <caption class="caption-top">Click any course to see more details.</caption>
+                        </table>
+                    </div>
+
+                    <div class="col-5">
+                        <table class="table w-50 table-dark table-bordered table-hover" id="detailsTable">
+                            <caption class="caption-top">Details</caption>
+                        </table>
+                    </div>
             </div>
         </div>
 

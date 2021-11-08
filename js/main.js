@@ -1,5 +1,35 @@
+//Declaring tables
+let table = document.getElementById("courseTable");
+let detailsTable = document.getElementById("detailsTable");
+
+//Variable to check if classes are hidden
+let classesHidden = false;
+
+//When the page fully loads
 window.onload = (event) => {
-    let table = document.getElementById("course-table");
+    build();
+}
+
+//Fetch the data
+let courseList;
+async function fetchData () {
+    console.log("Fetching data...")
+    await fetch('https://csc205.cscprof.com/courses')
+        .then(response => response.json())
+        .then(data => courseList = data);
+
+    console.log("Data fetched!");
+}
+
+//Build the tables
+async function build(){
+    //Fetch the data first with an await so the data is loaded before anything tries to acces it
+    await fetchData();
+
+    //Clear search box on refresh
+    searchbox.value = "";
+
+    //Creating the main table headers
     let tableHeaders = ["Course Number"];
     let mergedTableHeaders = [].concat.apply(tableHeaders, (Object.keys(courseList[0]).
         filter((attribute) =>
@@ -7,19 +37,39 @@ window.onload = (event) => {
             attribute.includes('Faculty') ||
             attribute.includes('Openings')
         )));
-    
-    let filteredCourses = courseList.map(a => ({ 
-        Department: a.Department + a.Number + " " + a.Section,
+
+    //Filter the courses to align with the headers
+    filteredCourses = courseList.map(a => ({ 
+        Department: a.Department + " " + a.Number + " " + a.Section,
         Title: a.Title, 
         Faculty: a.Faculty, 
         Openings: a.Openings + "/" + a.Capacity
     }));
 
+    //Generate the main table
     generateTableHead(table, mergedTableHeaders);
     generateTable(table, filteredCourses);
-    
+
+    //Filter the keys for the first column of the details table
+    detailTableKeys = Object.keys(courseList[0]).
+        filter((attribute) =>
+            attribute.includes('Title') ||
+            attribute.includes('Faculty') ||
+            attribute.includes('Openings') ||
+            attribute.includes('Day') ||
+            attribute.includes('Campus') ||
+            attribute.includes('Building') ||
+            attribute.includes('Room') ||
+            attribute.includes('Credits') ||
+            attribute.includes('Date') ||
+            attribute.includes('Rating')
+        );
+
+    //Generate the details table
+    generateDetails(detailsTable, detailTableKeys);
 }
 
+//Main table functions
 function generateTableHead(table, tableHeaders) {
 
     let thead = table.createTHead();
@@ -35,11 +85,17 @@ function generateTableHead(table, tableHeaders) {
 }
 
 function generateTable(table, courseList) {
-
     let tbody = table.createTBody();
+    tbody.setAttribute("id","classData");
 
     for (let course of courseList) {
-        let row = tbody.insertRow(); 
+        let row = tbody.insertRow();
+
+        //Add id to each course row for styling
+        row.setAttribute("id", "courseRow");
+
+        //Add an onclick event to the row passing the course code of the selected course
+        row.setAttribute("onclick", "replaceDetailsData(\"" + course.Department + "\")");
 
         for (value in course) {
             let cell = row.insertCell();
@@ -48,96 +104,205 @@ function generateTable(table, courseList) {
             cell.appendChild(text);
         }
     }
+    
+    colorTable();
+}
+//
+
+//Details table functions
+function formatData(course){
+
+    //Check if there is a start and end time
+    if(course.StartTime == null && course.EndTime == null){
+        course["Time"] = "Check with Faculty";
+    }
+    else{
+
+        //Declaring the time so it can format the rest properly, this takes out the :00.0 at the end of start and end time
+        course["Time"] = course.StartTime.substring(0, course.StartTime.indexOf(":00.0")) + " - " + course.EndTime.substring(0, course.StartTime.indexOf(":00.0"));
+        
+        //Check if the class takes place after 12
+        if(course.StartTime.substring(0, 2) > 12){
+            let times = course.Time.split("-");
+
+            let startingTime = times[0].split(":");
+            let endingTime = times[1].split(":");
+
+            newStartTime = startingTime[0] - 12;
+            newEndTime = endingTime[0] - 12;
+
+            //Format the time for night
+            course.Time = newStartTime + ":" + startingTime[1] + "PM - " + newEndTime + ":" + endingTime[1] + "PM";
+        }
+
+        //Check if the class starting in the morning but ends after 12
+        else if(course.EndTime.substring(0, 2) > 12){
+            let times = course.Time.split("-");
+
+            let startingTime = times[0].split(":");
+            let endingTime = times[1].split(":");
+
+            newEndTime = endingTime[0] - 12;
+
+            //Format the time for starting in morning and ending in evening
+            course.Time = startingTime[0] + ":" + startingTime[1] + "AM - " + newEndTime + ":" + endingTime[1] + "PM";
+        }
+
+        //All else, class takes place only in the morning
+        else{
+
+            //Format for just the morning
+            course["Time"] = course.StartTime.substring(0, course.StartTime.indexOf(":00.0")) + "AM - " + course.EndTime.substring(0, course.StartTime.indexOf(":00.0")) + "AM";
+        }
+    }
+
+    //Check if there is a building and room
+    if(course.Room == null && course.Building == null){
+        course.Room = "No Room";
+        course.Building = "No Building";
+    }
+
+    course["Course Code"] = course.Department + " " + course.Number + " " + course.Section;
+    course["OpeningsAndCapacity"] = course.Openings + "/" + course.Capacity;
+    
+    //Return the completely formatted course
+    return course;
 }
 
-function openInNewTab(url) {
-    window.open(url, '_blank').focus();
-}   
+function generateDetails(table, keys) {
+    //Add Course Code and Time to the keys array
+    keys.splice(0, 0, "Course Code");
+    keys.splice(5, 0, "Time");
 
-let courseList = [
-    {
-        "Line": 81,
-        "Department": "BUS",
-        "Number": 344,
-        "Section": 1,
-        "Title": "MANAGEMENT OF INFORMATION SYSTEMS",
-        "Faculty": "Richards, Gordon P.",
-        "Openings": 2,
-        "Capacity": 30,
-        "Status": "Open",
-        "Day": "MWF",
-        "StartTime": "1:25:00 PM",
-        "EndTime": "2:20 PM",
-        "Campus": " Main Campus",
-        "Building": " Science and Engineering",
-        "Room": " SE 341 Computer Science Lab",
-        "Credits": 3,
-        "Start Date": "8\/30\/2021",
-        "End Date": "12\/17\/2021\r\n"
-    },
-    {
-        "Line": 167,
-        "Department": "CSC",
-        "Number": 133,
-        "Section": 2,
-        "Title": "SURVEY OF COMPUTER SCIENCE",
-        "Faculty": "Madeira, Scott",
-        "Openings": 6,
-        "Capacity": 15,
-        "Status": "Open",
-        "Day": "H",
-        "StartTime": "2:00:00 PM",
-        "EndTime": "4:50 PM",
-        "Campus": " Main Campus",
-        "Building": " Science and Engineering",
-        "Room": " SE 341 Computer Science Lab",
-        "Credits": 0,
-        "Start Date": "8\/30\/2021",
-        "End Date": "12\/17\/2021\r\n"
-    },
-    {
-        "Line": 168, 
-        "Department": "CSC", 
-        "Number": 133, 
-        "Section": 3, 
-        "Title": "SURVEY OF COMPUTER SCIENCE", 
-        "Faculty": "Madeira, Scott", 
-        "Openings": 7, 
-        "Capacity": 15, 
-        "Status": "Open", 
-        "Day": "T", 
-        "StartTime": "6:30:00 PM", 
-        "EndTime": "9:20 PM", 
-        "Campus": " Main Campus", 
-        "Building": " Science and Engineering", 
-        "Room": " SE 341 Computer Science Lab", 
-        "Credits": 0, 
-        "Start Date": "8\/30\/2021", 
-        "End Date": "12\/17\/2021\r\n"
-    }, 
-    { 
-        "Line": 169, 
-        "Department": "CSC", 
-        "Number": 133, 
-        "Section": "0A", 
-        "Title": "SURVEY OF COMPUTER SCIENCE", 
-        "Faculty": "Richards, Gordon P.", 
-        "Openings": 15, 
-        "Capacity": 45, 
-        "Status": "Open", 
-        "Day": "TH", 
-        "StartTime": "8:00:00 AM", 
-        "EndTime": "9:20 AM", 
-        "Campus": " Main Campus", 
-        "Building": " Science and Engineering", 
-        "Room": " SE 110 Chemistry room", 
-        "Credits": 4, 
-        "Start Date": "8\/30\/2021", 
-        "End Date": "12\/17\/2021\r\n" 
-    }, 
-    { "Line": 170, "Department": "CSC", "Number": 190, "Section": 1, "Title": "HTML", "Faculty": "Madeira, Scott", "Openings": 4, "Capacity": 25, "Status": "Open", "Day": "M", "StartTime": "2:30:00 PM", "EndTime": "3:25 PM", "Campus": " Main Campus", "Building": " Science and Engineering", "Room": " SE 312A", "Credits": 1, "Start Date": "8\/30\/2021", "End Date": "12\/17\/2021\r\n" }
-    , { "Line": 171, "Department": "CSC", "Number": 205, "Section": 1, "Title": "HCI DESIGN & PROGRAMMING", "Faculty": "Madeira, Scott", "Openings": 10, "Capacity": 25, "Status": "Open", "Day": "MWF", "StartTime": "11:15:00 AM", "EndTime": "12:10 PM", "Campus": " Main Campus", "Building": " Science and Engineering", "Room": " SE 341 Computer Science Lab", "Credits": 3, "Start Date": "8\/30\/2021", "End Date": "12\/17\/2021\r\n" }
-    , { "Line": 172, "Department": "CSC", "Number": 344, "Section": 1, "Title": "MANAGEMENT INFORMATION SYSTEM", "Faculty": "Poteete, Paul W. Steffine, Aaron", "Openings": 2, "Capacity": 90, "Status": "Open", "Day": "MWF", "StartTime": "1:25:00 PM", "EndTime": "2:20 PM", "Campus": " Main Campus", "Building": " Science and Engineering", "Room": " SE 341 Computer Science Lab", "Credits": 3, "Start Date": "8\/30\/2021", "End Date": "12\/17\/2021\r\n" }
-    , { "Line": 173, "Department": "CSC", "Number": 363, "Section": "E1", "Title": "DATABASE SYSTEMS", "Faculty": "Hinderliter, Jeffery A", "Openings": 4, "Capacity": 30, "Status": "Open", "Day": "T", "StartTime": "6:30:00 PM", "EndTime": "9:20 PM", "Campus": " Main Campus", "Building": " Science and Engineering", "Room": " SE 233 Engineering Lab\/Classroom", "Credits": 3, "Start Date": "8\/30\/2021", "End Date": "12\/17\/2021\r\n" }
-    , { "Line": 296, "Department": "HUM", "Number": 103, "Section": "0A", "Title": "INVITATION TO THE HUMANTIES", "Faculty": "Miller, Eric John", "Openings": 12, "Capacity": 180, "Status": "Open", "Day": "W", "StartTime": "11:15:00 AM", "EndTime": "12:10 PM", "Campus": " Main Campus", "Building": " Old Main", "Room": " John White Chapel", "Credits": 0, "Start Date": "8\/30\/2021", "End Date": "12\/17\/2021" }
-]
+    //Create a table body
+    let tbody = table.createTBody();
+
+
+    for(let value of keys){
+        let row = tbody.insertRow();
+
+        let keyCell = row.insertCell();
+
+        let cell = row.insertCell();
+        cell.id = value;
+
+        keyCell.appendChild(document.createTextNode(value));
+        cell.appendChild(document.createTextNode(""));
+    }
+}
+
+function replaceDetailsData(passedCourse){
+    //Set the details table to visible
+    document.getElementById("detailsTable").style = "display: inline-block";
+
+    //For each course in the filtered course list
+    for(course in filteredCourses){
+
+        //If the passed in course is equal to the current course of the for loop...
+        if(passedCourse == filteredCourses[course].Department){
+
+            //Format the passed in course
+            formattedCourse = formatData(courseList[course]);
+
+            //Grab each cell and change its text to correspond to the passed in course's values
+            document.getElementById("Course Code").innerHTML = formattedCourse["Course Code"];
+            document.getElementById("Title").innerHTML = formattedCourse.Title;
+            document.getElementById("Faculty").innerHTML = formattedCourse.Faculty;
+            document.getElementById("Openings").innerHTML = formattedCourse.OpeningsAndCapacity;
+            document.getElementById("Day").innerHTML = formattedCourse.Day;
+            document.getElementById("Time").innerHTML = formattedCourse.Time;
+            document.getElementById("Campus").innerHTML = formattedCourse.Campus;
+            document.getElementById("Building").innerHTML = formattedCourse.Building;
+            document.getElementById("Room").innerHTML = formattedCourse.Room;
+            document.getElementById("Credits").innerHTML = formattedCourse.Credits;
+            document.getElementById("Start Date").innerHTML = formattedCourse["Start Date"];
+            document.getElementById("End Date").innerHTML = formattedCourse["End Date"];
+            document.getElementById("Rating").innerHTML = formattedCourse.Rating;
+        }
+    }
+}
+//
+
+function colorTable(){
+    //Grab all the rows in the main table
+    let rows = document.getElementById("courseTable").rows;
+
+    //For each row in the table
+    for (let i = 1; i < rows.length; i++) {
+        let row = rows[i];
+
+        //If openings is 0...
+        if(parseInt(row.lastChild.innerHTML) == 0){
+            //Make the opening column red
+            rows[i].lastChild.className = 'table-danger';
+        }
+        //If openings is less than 5...
+        else if(parseInt(row.lastChild.innerHTML) < 5){
+            //Make the opening column yellow
+            rows[i].lastChild.className = 'table-warning';
+        }    
+    }
+}
+
+function hideClasses(){
+    //Check if classes are already hidden
+    //If they aren't...
+    if(classesHidden == false){
+        //Grab the body and set the rows
+        let tbody = document.getElementById("courseTable");
+        let rows = tbody.rows;
+
+        //For each row...
+        for (var i=rows.length-1; i >=0; i--) {
+            let row = rows[i];
+
+            //If openings is 0...
+            if(parseInt(row.lastChild.innerHTML) == 0){
+                //Delete the row
+                table.deleteRow(i);
+            }  
+        }
+
+        //Set the button text to Show
+        document.getElementById("hideButton").innerHTML = "Show Full Classes";
+
+        //Set classes hidden to true
+        classesHidden = true;
+    }
+    //If classes are hidden
+    else{
+        //Grab the body and delete it
+        let tbody = document.getElementById("classData");
+        tbody.remove();
+
+        //Generate the main table again
+        generateTable(table, filteredCourses);
+
+        //Set the button text to Hide
+        document.getElementById("hideButton").innerHTML = "Hide Full Classes";
+
+        //Set classes hidden to false
+        classesHidden = false;
+    }
+}
+
+//Event listener for search box input
+var etarget = "";
+searchbox.addEventListener("input", (e) => etarget = e.target.value);
+
+//Call function on input into the searchbox
+searchbox.oninput = function () {    
+    applySearch();
+}
+
+//Apply the search
+function applySearch() {
+    let tbody = document.getElementById("classData");
+    tbody.remove();
+
+    let someClasses = filteredCourses.filter(oneClass => Object.keys(oneClass)
+        .some(key => String(oneClass[key]).toLowerCase().includes(etarget.toLowerCase()) ) );
+   
+    generateTable(table, someClasses);
+}
+//

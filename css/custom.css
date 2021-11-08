@@ -18,28 +18,24 @@ header {
     background-position-y: 42%;
 }
 
-header h1{
+header h1 {
     font-size: 48px;
     font-weight: bold;
     color:rgb(255, 255, 255);
     text-shadow: 4px 4px rgb(44, 44, 44);
 }
 
-header img{
+header img {
     height: 140px;
 }
 
-a:link {
-    color:rgb(255, 255, 255);
-    text-decoration: none;
+#courseRow {
+    cursor: pointer;
 }
 
-a:hover {
-    color:rgb(255, 222, 77) !important;
-    text-decoration: none;
-}
-
-a:visited {
-    color:rgb(255, 255, 255);
-    text-decoration: none;
+#detailsTable {
+    display: none;
+    position: -webkit-sticky; /* Safari */
+    position: sticky;
+    top: 0;
 }
