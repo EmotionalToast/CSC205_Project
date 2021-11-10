@@ -33,9 +33,41 @@ header img {
     cursor: pointer;
 }
 
+#courseRow:hover {
+    color:rgb(211, 221, 255);
+}
+
+.classFull{
+    color: rgb(255, 66, 66);
+}
+
+.classLow{
+    color: rgb(235, 185, 23);
+}
+
+.ratingLow{
+    color: rgb(255, 66, 66);
+}
+
+.ratingAverage{
+    color: rgb(235, 185, 23);
+}
+
+.ratingHigh{
+    color: rgb(66, 255, 66);
+}
+
 #detailsTable {
     display: none;
     position: -webkit-sticky; /* Safari */
     position: sticky;
     top: 0;
+}
+
+#detailsTable a {
+    color: rgb(211, 221, 255);
+}
+
+#detailsTable a:hover {
+    color: rgb(159, 171, 211);
 }
